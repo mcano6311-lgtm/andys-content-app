@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Mic, Square, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useTranslations } from "@/lib/i18n/use-translations"
 
 type RecorderState = "idle" | "recording" | "preview"
 
@@ -20,6 +21,7 @@ export function VoiceRecorder({
 }: {
   onSave: (dataUrl: string, durationSeconds: number) => void
 }) {
+  const { t } = useTranslations()
   const [state, setState] = useState<RecorderState>("idle")
   const [elapsed, setElapsed] = useState(0)
   const [error, setError] = useState<string | null>(null)
@@ -34,7 +36,7 @@ export function VoiceRecorder({
 
   useEffect(() => {
     return () => {
-      streamRef.current?.getTracks().forEach((t) => t.stop())
+      streamRef.current?.getTracks().forEach((track) => track.stop())
       if (timerRef.current) clearInterval(timerRef.current)
       if (previewUrl) URL.revokeObjectURL(previewUrl)
     }
@@ -64,7 +66,7 @@ export function VoiceRecorder({
         setPreviewUrl(url)
         setPreviewDataUrl(dataUrl)
         setState("preview")
-        streamRef.current?.getTracks().forEach((t) => t.stop())
+        streamRef.current?.getTracks().forEach((track) => track.stop())
       }
 
       recorder.start()
@@ -75,9 +77,7 @@ export function VoiceRecorder({
         setElapsed(Math.floor((Date.now() - startedAtRef.current) / 1000))
       }, 250)
     } catch {
-      setError(
-        "No se pudo acceder al microfono. Revisa los permisos del navegador."
-      )
+      setError(t("recorder.error"))
     }
   }
 
@@ -109,10 +109,10 @@ export function VoiceRecorder({
         <audio src={previewUrl} controls className="w-full" />
         <div className="flex w-full gap-2">
           <Button variant="outline" className="flex-1" onClick={discard}>
-            <Trash2 /> Regrabar
+            <Trash2 /> {t("recorder.rerecord")}
           </Button>
           <Button className="flex-1" onClick={save}>
-            Guardar nota de voz
+            {t("recorder.save")}
           </Button>
         </div>
       </div>
@@ -130,7 +130,7 @@ export function VoiceRecorder({
             ? "bg-red-600 animate-pulse"
             : "bg-primary")
         }
-        aria-label={state === "recording" ? "Detener grabacion" : "Grabar"}
+        aria-label={state === "recording" ? t("recorder.stopLabel") : t("recorder.startLabel")}
       >
         {state === "recording" ? <Square className="size-7" /> : <Mic className="size-8" />}
       </button>
@@ -138,9 +138,7 @@ export function VoiceRecorder({
         {mm}:{ss}
       </p>
       <p className="text-center text-sm text-muted-foreground">
-        {state === "recording"
-          ? "Grabando... toca para detener"
-          : "Toca para empezar a grabar"}
+        {state === "recording" ? t("recorder.recording") : t("recorder.idle")}
       </p>
       {error && <p className="text-center text-sm text-destructive">{error}</p>}
     </div>

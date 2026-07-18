@@ -37,32 +37,32 @@ import {
 import { fromDatetimeLocalValue, formatDayTime, toDatetimeLocalValue } from "@/lib/date"
 import { PLATFORM_LABEL } from "@/lib/platform"
 import type { ContentStatus, Platform } from "@/lib/types"
-
-const STATUS_LABEL: Record<ContentStatus, string> = {
-  idea: "Idea",
-  scheduled: "Agendado",
-  in_progress: "En progreso",
-  posted: "Publicado",
-  skipped: "Cancelado",
-}
+import { useTranslations } from "@/lib/i18n/use-translations"
 
 export function ContentItemDetail({ id }: { id: string }) {
   const store = useAppStore()
   const router = useRouter()
+  const { t, locale } = useTranslations()
   const item = store.contentItems.find((c) => c.id === id)
 
   const [voiceOpen, setVoiceOpen] = useState(false)
   const [linkOpen, setLinkOpen] = useState(false)
   const [noteBody, setNoteBody] = useState("")
 
+  const statusLabel: Record<ContentStatus, string> = {
+    idea: t("status.idea"),
+    scheduled: t("status.scheduled"),
+    in_progress: t("status.in_progress"),
+    posted: t("status.posted"),
+    skipped: t("status.skipped"),
+  }
+
   if (!item) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-3 px-4 text-center">
-        <p className="text-sm text-muted-foreground">
-          No se encontro este item de contenido.
-        </p>
+        <p className="text-sm text-muted-foreground">{t("detail.notFound")}</p>
         <Link href="/" className="text-sm font-medium text-primary underline">
-          Volver al calendario
+          {t("detail.backToCalendar")}
         </Link>
       </div>
     )
@@ -74,7 +74,7 @@ export function ContentItemDetail({ id }: { id: string }) {
   const relatedNotes = store.writtenNotes.filter((n) => n.contentItemId === id)
 
   function handleDelete() {
-    if (!window.confirm("¿Eliminar este item de contenido?")) return
+    if (!window.confirm(t("detail.confirmDelete"))) return
     deleteContentItem(id)
     router.push("/")
   }
@@ -86,19 +86,19 @@ export function ContentItemDetail({ id }: { id: string }) {
           href="/"
           className="flex items-center gap-1 text-sm text-muted-foreground"
         >
-          <ArrowLeft className="size-4" /> Calendario
+          <ArrowLeft className="size-4" /> {t("detail.calendar")}
         </Link>
         <button
           onClick={handleDelete}
           className="flex items-center gap-1 text-sm text-destructive"
         >
-          <Trash2 className="size-4" /> Eliminar
+          <Trash2 className="size-4" /> {t("detail.delete")}
         </button>
       </div>
 
       <div className="mb-6 flex flex-col gap-3 rounded-2xl border p-4">
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="d-title">Titulo</Label>
+          <Label htmlFor="d-title">{t("detail.title")}</Label>
           <Input
             id="d-title"
             value={item.title}
@@ -108,7 +108,7 @@ export function ContentItemDetail({ id }: { id: string }) {
 
         <div className="flex gap-3">
           <div className="flex flex-1 flex-col gap-1.5">
-            <Label>Plataforma</Label>
+            <Label>{t("detail.platform")}</Label>
             <Select
               value={item.platform}
               onValueChange={(v) =>
@@ -128,7 +128,7 @@ export function ContentItemDetail({ id }: { id: string }) {
             </Select>
           </div>
           <div className="flex flex-1 flex-col gap-1.5">
-            <Label>Estado</Label>
+            <Label>{t("detail.status")}</Label>
             <Select
               value={item.status}
               onValueChange={(v) =>
@@ -139,9 +139,9 @@ export function ContentItemDetail({ id }: { id: string }) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {(Object.keys(STATUS_LABEL) as ContentStatus[]).map((s) => (
+                {(Object.keys(statusLabel) as ContentStatus[]).map((s) => (
                   <SelectItem key={s} value={s}>
-                    {STATUS_LABEL[s]}
+                    {statusLabel[s]}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -150,7 +150,7 @@ export function ContentItemDetail({ id }: { id: string }) {
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="d-date">Fecha y hora</Label>
+          <Label htmlFor="d-date">{t("detail.dateTime")}</Label>
           <Input
             id="d-date"
             type="datetime-local"
@@ -162,12 +162,12 @@ export function ContentItemDetail({ id }: { id: string }) {
             }
           />
           <p className="text-xs text-muted-foreground">
-            {formatDayTime(item.scheduledAt)}
+            {formatDayTime(item.scheduledAt, locale)}
           </p>
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="d-notes">Notas</Label>
+          <Label htmlFor="d-notes">{t("detail.notes")}</Label>
           <Textarea
             id="d-notes"
             rows={3}
@@ -178,8 +178,8 @@ export function ContentItemDetail({ id }: { id: string }) {
       </div>
 
       <RelatedSection
-        title="Ideas que lo originaron"
-        empty="Ninguna idea vinculada."
+        title={t("detail.originIdeas")}
+        empty={t("detail.noIdeasLinked")}
       >
         {relatedIdeas.map((i) => (
           <p key={i.id} className="rounded-lg bg-muted p-2.5 text-sm">
@@ -189,14 +189,14 @@ export function ContentItemDetail({ id }: { id: string }) {
       </RelatedSection>
 
       <RelatedSection
-        title="Links de inspiracion"
-        empty="Ningun link vinculado."
+        title={t("detail.inspirationLinks")}
+        empty={t("detail.noLinksLinked")}
         action={
           <button
             onClick={() => setLinkOpen(true)}
             className="flex items-center gap-1 text-xs font-medium text-primary"
           >
-            <Plus className="size-3.5" /> Vincular link
+            <Plus className="size-3.5" /> {t("detail.linkHere")}
           </button>
         }
       >
@@ -213,7 +213,7 @@ export function ContentItemDetail({ id }: { id: string }) {
               </a>
               {l.platform && <PlatformBadge platform={l.platform} className="mt-1" />}
             </div>
-            <button onClick={() => deleteInspirationLink(l.id)} aria-label="Eliminar">
+            <button onClick={() => deleteInspirationLink(l.id)} aria-label={t("feed.delete")}>
               <Trash2 className="size-3.5 text-muted-foreground" />
             </button>
           </div>
@@ -221,39 +221,39 @@ export function ContentItemDetail({ id }: { id: string }) {
       </RelatedSection>
 
       <RelatedSection
-        title="Notas de voz"
-        empty="Ninguna nota de voz."
+        title={t("detail.voiceNotes")}
+        empty={t("detail.noVoiceNotes")}
         action={
           <button
             onClick={() => setVoiceOpen(true)}
             className="flex items-center gap-1 text-xs font-medium text-primary"
           >
-            <Mic className="size-3.5" /> Grabar aqui
+            <Mic className="size-3.5" /> {t("detail.recordHere")}
           </button>
         }
       >
         {relatedVoice.map((v) => (
           <div key={v.id} className="flex items-center gap-2 rounded-lg bg-muted p-2.5">
             <audio src={v.audioDataUrl} controls className="h-8 flex-1" />
-            <button onClick={() => deleteVoiceNote(v.id)} aria-label="Eliminar">
+            <button onClick={() => deleteVoiceNote(v.id)} aria-label={t("feed.delete")}>
               <Trash2 className="size-3.5 text-muted-foreground" />
             </button>
           </div>
         ))}
       </RelatedSection>
 
-      <RelatedSection title="Notas escritas" empty="Ninguna nota escrita.">
+      <RelatedSection title={t("detail.writtenNotes")} empty="">
         {relatedNotes.map((n) => (
           <div key={n.id} className="flex items-start justify-between gap-2 rounded-lg bg-muted p-2.5">
             <p className="whitespace-pre-wrap text-sm">{n.body}</p>
-            <button onClick={() => deleteWrittenNote(n.id)} aria-label="Eliminar">
+            <button onClick={() => deleteWrittenNote(n.id)} aria-label={t("feed.delete")}>
               <Trash2 className="size-3.5 text-muted-foreground" />
             </button>
           </div>
         ))}
         <div className="flex gap-2">
           <Textarea
-            placeholder="Agregar una nota..."
+            placeholder={t("detail.addNotePlaceholder")}
             value={noteBody}
             onChange={(e) => setNoteBody(e.target.value)}
             rows={2}
@@ -276,7 +276,7 @@ export function ContentItemDetail({ id }: { id: string }) {
       <Sheet open={voiceOpen} onOpenChange={setVoiceOpen}>
         <SheetContent side="bottom" className="mx-auto max-w-lg rounded-t-3xl">
           <SheetHeader>
-            <SheetTitle>Nota de voz</SheetTitle>
+            <SheetTitle>{t("capture.voiceTitle")}</SheetTitle>
           </SheetHeader>
           <div className="px-4 pb-6">
             <VoiceRecorder
@@ -298,7 +298,7 @@ export function ContentItemDetail({ id }: { id: string }) {
         <SheetContent side="bottom" className="mx-auto max-w-lg rounded-t-3xl">
           <SheetHeader>
             <SheetTitle className="flex items-center gap-2">
-              <Link2 className="size-4" /> Vincular link
+              <Link2 className="size-4" /> {t("detail.linkThisTitle")}
             </SheetTitle>
           </SheetHeader>
           <div className="px-4 pb-6">

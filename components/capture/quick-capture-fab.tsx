@@ -14,26 +14,28 @@ import { IdeaCaptureForm } from "@/components/capture/idea-capture-form"
 import { LinkCaptureForm } from "@/components/capture/link-capture-form"
 import { VoiceRecorder } from "@/components/capture/voice-recorder"
 import { addVoiceNote } from "@/lib/store"
+import { useTranslations } from "@/lib/i18n/use-translations"
 
 type Mode = "menu" | "idea" | "link" | "voice"
 
-const TITLES: Record<Mode, string> = {
-  menu: "Capturar algo",
-  idea: "Nueva idea",
-  link: "Guardar link de inspiracion",
-  voice: "Nota de voz",
-}
-
-const DESCRIPTIONS: Record<Mode, string> = {
-  menu: "Se guarda con fecha y hora automatica.",
-  idea: "Escribe lo que se te ocurrio, sin filtro.",
-  link: "Pega el link de un video que te inspire.",
-  voice: "Graba directo desde el navegador.",
-}
-
 export function QuickCaptureFab() {
+  const { t } = useTranslations()
   const [open, setOpen] = useState(false)
   const [mode, setMode] = useState<Mode>("menu")
+
+  const titles: Record<Mode, string> = {
+    menu: t("capture.title"),
+    idea: t("capture.ideaTitle"),
+    link: t("capture.linkTitle"),
+    voice: t("capture.voiceTitle"),
+  }
+
+  const descriptions: Record<Mode, string> = {
+    menu: t("capture.subtitle"),
+    idea: t("capture.ideaSubtitle"),
+    link: t("capture.linkSubtitle"),
+    voice: t("capture.voiceSubtitle"),
+  }
 
   function close() {
     setOpen(false)
@@ -51,7 +53,7 @@ export function QuickCaptureFab() {
         type="button"
         onClick={() => setOpen(true)}
         className="fixed bottom-20 right-1/2 z-40 flex size-14 translate-x-1/2 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-xl transition-transform active:scale-95 sm:right-8 sm:translate-x-0"
-        aria-label="Capturar algo"
+        aria-label={t("capture.title")}
       >
         <Plus className="size-6" />
       </button>
@@ -62,14 +64,14 @@ export function QuickCaptureFab() {
               type="button"
               onClick={() => setMode("menu")}
               className="absolute top-3 left-3 flex size-8 items-center justify-center rounded-full hover:bg-muted"
-              aria-label="Volver"
+              aria-label={t("capture.back")}
             >
               <ChevronLeft className="size-4" />
             </button>
           )}
-          <SheetTitle className="text-center">{TITLES[mode]}</SheetTitle>
+          <SheetTitle className="text-center">{titles[mode]}</SheetTitle>
           <SheetDescription className="text-center">
-            {DESCRIPTIONS[mode]}
+            {descriptions[mode]}
           </SheetDescription>
         </SheetHeader>
 
@@ -81,7 +83,7 @@ export function QuickCaptureFab() {
               className="h-14 justify-start gap-3 text-base"
               onClick={() => setMode("idea")}
             >
-              <Lightbulb className="size-5 text-amber-500" /> Idea (texto)
+              <Lightbulb className="size-5 text-amber-500" /> {t("capture.idea")}
             </Button>
             <Button
               variant="outline"
@@ -89,7 +91,7 @@ export function QuickCaptureFab() {
               className="h-14 justify-start gap-3 text-base"
               onClick={() => setMode("link")}
             >
-              <Link2 className="size-5 text-sky-500" /> Pegar link
+              <Link2 className="size-5 text-sky-500" /> {t("capture.link")}
             </Button>
             <Button
               variant="outline"
@@ -97,7 +99,7 @@ export function QuickCaptureFab() {
               className="h-14 justify-start gap-3 text-base"
               onClick={() => setMode("voice")}
             >
-              <Mic className="size-5 text-red-500" /> Grabar voz
+              <Mic className="size-5 text-red-500" /> {t("capture.voice")}
             </Button>
           </div>
         )}

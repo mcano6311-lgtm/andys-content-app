@@ -13,9 +13,11 @@ import {
   weekdayShort,
 } from "@/lib/date"
 import { MEETING_DOT, PLATFORM_DOT } from "@/lib/platform"
+import { useTranslations } from "@/lib/i18n/use-translations"
 
 export function CalendarView() {
   const { contentItems, meetings } = useAppStore()
+  const { locale } = useTranslations()
   const [monthDate, setMonthDate] = useState(() => {
     const d = new Date()
     d.setDate(1)
@@ -64,7 +66,7 @@ export function CalendarView() {
     <div className="flex flex-1 flex-col px-4 pt-6">
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-lg font-semibold capitalize">
-          {monthLabel(monthDate)}
+          {monthLabel(monthDate, locale)}
         </h1>
         <div className="flex gap-1">
           <Button variant="ghost" size="icon-sm" onClick={() => goToMonth(-1)}>
@@ -78,7 +80,7 @@ export function CalendarView() {
 
       <div className="mb-1 grid grid-cols-7 text-center text-xs font-medium text-muted-foreground">
         {Array.from({ length: 7 }, (_, i) => (
-          <div key={i}>{weekdayShort(i)}</div>
+          <div key={i}>{weekdayShort(i, locale)}</div>
         ))}
       </div>
 

@@ -15,12 +15,13 @@ import {
 import { toDatetimeLocalValue, fromDatetimeLocalValue } from "@/lib/date"
 import { PLATFORM_LABEL } from "@/lib/platform"
 import type { ContentItem, Platform } from "@/lib/types"
+import { useTranslations } from "@/lib/i18n/use-translations"
 
 export function ContentItemForm({
   defaultDate,
   initialTitle = "",
   initialNotes = "",
-  submitLabel = "Guardar",
+  submitLabel,
   onSubmit,
 }: {
   defaultDate: Date
@@ -29,6 +30,7 @@ export function ContentItemForm({
   submitLabel?: string
   onSubmit: (input: Omit<ContentItem, "id" | "createdAt">) => void
 }) {
+  const { t } = useTranslations()
   const [title, setTitle] = useState(initialTitle)
   const [platform, setPlatform] = useState<Platform>("instagram")
   const [scheduledAt, setScheduledAt] = useState(
@@ -50,18 +52,18 @@ export function ContentItemForm({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="ci-title">Titulo</Label>
+        <Label htmlFor="ci-title">{t("contentForm.title")}</Label>
         <Input
           id="ci-title"
           autoFocus
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="De que va el video"
+          placeholder={t("contentForm.titlePlaceholder")}
         />
       </div>
       <div className="flex gap-3">
         <div className="flex flex-1 flex-col gap-1.5">
-          <Label>Plataforma</Label>
+          <Label>{t("contentForm.platform")}</Label>
           <Select
             value={platform}
             onValueChange={(v) => setPlatform(v as Platform)}
@@ -79,7 +81,7 @@ export function ContentItemForm({
           </Select>
         </div>
         <div className="flex flex-1 flex-col gap-1.5">
-          <Label htmlFor="ci-date">Fecha y hora</Label>
+          <Label htmlFor="ci-date">{t("contentForm.dateTime")}</Label>
           <Input
             id="ci-date"
             type="datetime-local"
@@ -89,7 +91,7 @@ export function ContentItemForm({
         </div>
       </div>
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="ci-notes">Notas</Label>
+        <Label htmlFor="ci-notes">{t("contentForm.notes")}</Label>
         <Textarea
           id="ci-notes"
           value={notes}
@@ -98,7 +100,7 @@ export function ContentItemForm({
         />
       </div>
       <Button onClick={save} disabled={!title.trim()}>
-        {submitLabel}
+        {submitLabel ?? t("contentForm.save")}
       </Button>
     </div>
   )

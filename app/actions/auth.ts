@@ -10,13 +10,13 @@ import {
 } from "@/lib/auth/session"
 
 export async function login(
-  _prevState: { error?: string },
+  _prevState: { error?: boolean },
   formData: FormData
-): Promise<{ error?: string }> {
+): Promise<{ error?: boolean }> {
   const password = String(formData.get("password") ?? "")
 
   if (!password || !checkPassword(password)) {
-    return { error: "Contrasena incorrecta." }
+    return { error: true }
   }
 
   const token = await createSessionToken()

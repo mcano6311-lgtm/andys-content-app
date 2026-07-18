@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { toDatetimeLocalValue, fromDatetimeLocalValue } from "@/lib/date"
 import type { Meeting } from "@/lib/types"
+import { useTranslations } from "@/lib/i18n/use-translations"
 
 export function MeetingForm({
   defaultDate,
@@ -15,6 +16,7 @@ export function MeetingForm({
   defaultDate: Date
   onSubmit: (input: Omit<Meeting, "id" | "createdAt">) => void
 }) {
+  const { t } = useTranslations()
   const [title, setTitle] = useState("")
   const [scheduledAt, setScheduledAt] = useState(
     toDatetimeLocalValue(defaultDate.toISOString())
@@ -35,18 +37,18 @@ export function MeetingForm({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="mt-title">Titulo</Label>
+        <Label htmlFor="mt-title">{t("meetingForm.title")}</Label>
         <Input
           id="mt-title"
           autoFocus
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Junta de contenido"
+          placeholder={t("meetingForm.titlePlaceholder")}
         />
       </div>
       <div className="flex gap-3">
         <div className="flex flex-1 flex-col gap-1.5">
-          <Label htmlFor="mt-date">Fecha y hora</Label>
+          <Label htmlFor="mt-date">{t("meetingForm.dateTime")}</Label>
           <Input
             id="mt-date"
             type="datetime-local"
@@ -55,17 +57,17 @@ export function MeetingForm({
           />
         </div>
         <div className="flex flex-1 flex-col gap-1.5">
-          <Label htmlFor="mt-location">Lugar</Label>
+          <Label htmlFor="mt-location">{t("meetingForm.location")}</Label>
           <Input
             id="mt-location"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
-            placeholder="Zoom, oficina..."
+            placeholder={t("meetingForm.locationPlaceholder")}
           />
         </div>
       </div>
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="mt-notes">Notas</Label>
+        <Label htmlFor="mt-notes">{t("meetingForm.notes")}</Label>
         <Textarea
           id="mt-notes"
           value={notes}
@@ -74,7 +76,7 @@ export function MeetingForm({
         />
       </div>
       <Button onClick={save} disabled={!title.trim()}>
-        Guardar junta
+        {t("meetingForm.save")}
       </Button>
     </div>
   )

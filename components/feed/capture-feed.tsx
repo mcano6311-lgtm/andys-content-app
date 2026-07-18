@@ -25,6 +25,7 @@ import type {
   VoiceNote,
   WrittenNote,
 } from "@/lib/types"
+import { useTranslations } from "@/lib/i18n/use-translations"
 
 type FeedRow =
   | { kind: "idea"; createdAt: string; data: Idea }
@@ -32,18 +33,19 @@ type FeedRow =
   | { kind: "voice"; createdAt: string; data: VoiceNote }
   | { kind: "note"; createdAt: string; data: WrittenNote }
 
-const TAB_LABEL: Record<"all" | FeedRow["kind"], string> = {
-  all: "Todo",
-  idea: "Ideas",
-  link: "Links",
-  voice: "Voz",
-  note: "Notas",
-}
-
 export function CaptureFeed() {
   const { ideas, inspirationLinks, voiceNotes, writtenNotes, contentItems } =
     useAppStore()
+  const { t } = useTranslations()
   const [tab, setTab] = useState<"all" | FeedRow["kind"]>("all")
+
+  const tabLabel: Record<"all" | FeedRow["kind"], string> = {
+    all: t("feed.tabAll"),
+    idea: t("feed.tabIdeas"),
+    link: t("feed.tabLinks"),
+    voice: t("feed.tabVoice"),
+    note: t("feed.tabNotes"),
+  }
 
   const rows = useMemo<FeedRow[]>(() => {
     const all: FeedRow[] = [
@@ -78,13 +80,13 @@ export function CaptureFeed() {
 
   return (
     <div className="flex flex-1 flex-col px-4 pt-6">
-      <h1 className="mb-4 text-lg font-semibold">Ideas e inspiracion</h1>
+      <h1 className="mb-4 text-lg font-semibold">{t("feed.heading")}</h1>
 
       <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
         <TabsList className="mb-4 w-full">
-          {(Object.keys(TAB_LABEL) as (typeof tab)[]).map((key) => (
+          {(Object.keys(tabLabel) as (typeof tab)[]).map((key) => (
             <TabsTrigger key={key} value={key} className="flex-1">
-              {TAB_LABEL[key]}
+              {tabLabel[key]}
             </TabsTrigger>
           ))}
         </TabsList>
@@ -92,7 +94,7 @@ export function CaptureFeed() {
         <TabsContent value={tab} className="flex flex-col gap-3 pb-6">
           {filtered.length === 0 && (
             <p className="py-10 text-center text-sm text-muted-foreground">
-              Nada por aqui todavia. Usa el boton + para capturar algo.
+              {t("feed.empty")}
             </p>
           )}
 
@@ -124,17 +126,19 @@ function FeedRowCard({
   row: FeedRow
   linkedTitle: string | null
 }) {
+  const { t, locale } = useTranslations()
+
   return (
     <div className="rounded-xl border p-3">
       <div className="mb-1.5 flex items-center justify-between">
         <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
           <RowIcon kind={row.kind} />
-          {formatRelative(row.createdAt)}
+          {formatRelative(row.createdAt, locale)}
         </span>
         <button
           onClick={() => removeRow(row)}
           className="text-muted-foreground hover:text-destructive"
-          aria-label="Eliminar"
+          aria-label={t("feed.delete")}
         >
           <Trash2 className="size-3.5" />
         </button>
@@ -148,7 +152,7 @@ function FeedRowCard({
               href={`/content/${row.data.promotedContentItemId}`}
               className="text-xs font-medium text-primary underline underline-offset-2"
             >
-              Ya esta en el calendario
+              {t("feed.alreadyPromoted")}
             </Link>
           ) : (
             <div>
@@ -174,19 +178,19 @@ function FeedRowCard({
           )}
           {row.data.tags.length > 0 && (
             <div className="flex flex-wrap gap-1">
-              {row.data.tags.map((t) => (
+              {row.data.tags.map((tag) => (
                 <span
-                  key={t}
+                  key={tag}
                   className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground"
                 >
-                  #{t}
+                  #{tag}
                 </span>
               ))}
             </div>
           )}
           {linkedTitle && (
             <p className="text-xs text-muted-foreground">
-              Vinculado a: {linkedTitle}
+              {t("feed.linkedTo")}: {linkedTitle}
             </p>
           )}
         </div>
@@ -197,7 +201,7 @@ function FeedRowCard({
           <audio src={row.data.audioDataUrl} controls className="w-full" />
           <p className="text-xs text-muted-foreground">
             {row.data.durationSeconds}s
-            {linkedTitle ? ` · vinculado a: ${linkedTitle}` : ""}
+            {linkedTitle ? ` · ${t("feed.linkedTo")}: ${linkedTitle}` : ""}
           </p>
         </div>
       )}
@@ -207,7 +211,7 @@ function FeedRowCard({
           <p className="whitespace-pre-wrap text-sm">{row.data.body}</p>
           {linkedTitle && (
             <p className="text-xs text-muted-foreground">
-              Vinculado a: {linkedTitle}
+              {t("feed.linkedTo")}: {linkedTitle}
             </p>
           )}
         </div>

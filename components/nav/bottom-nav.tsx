@@ -4,13 +4,15 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { CalendarDays, Lightbulb } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useTranslations } from "@/lib/i18n/use-translations"
 
 export function BottomNav() {
   const pathname = usePathname()
+  const { t } = useTranslations()
 
   const items = [
-    { href: "/", label: "Calendario", icon: CalendarDays },
-    { href: "/ideas", label: "Ideas", icon: Lightbulb },
+    { href: "/", label: t("nav.calendar"), icon: CalendarDays },
+    { href: "/ideas", label: t("nav.ideas"), icon: Lightbulb },
   ]
 
   return (

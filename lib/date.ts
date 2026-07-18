@@ -15,50 +15,88 @@ export function isSameDay(iso: string, d: Date): boolean {
   return dayKey(iso) === dayKeyFromDate(d)
 }
 
-const MONTHS_ES = [
-  "enero",
-  "febrero",
-  "marzo",
-  "abril",
-  "mayo",
-  "junio",
-  "julio",
-  "agosto",
-  "septiembre",
-  "octubre",
-  "noviembre",
-  "diciembre",
-]
+import type { Locale } from "@/lib/i18n/dictionary"
 
-const WEEKDAYS_ES_SHORT = ["dom", "lun", "mar", "mie", "jue", "vie", "sab"]
-
-export function monthLabel(d: Date): string {
-  return `${MONTHS_ES[d.getMonth()]} ${d.getFullYear()}`
+const MONTHS: Record<Locale, string[]> = {
+  es: [
+    "enero",
+    "febrero",
+    "marzo",
+    "abril",
+    "mayo",
+    "junio",
+    "julio",
+    "agosto",
+    "septiembre",
+    "octubre",
+    "noviembre",
+    "diciembre",
+  ],
+  en: [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ],
 }
 
-export function weekdayShort(index: number): string {
-  return WEEKDAYS_ES_SHORT[index]
+const WEEKDAYS_SHORT: Record<Locale, string[]> = {
+  es: ["dom", "lun", "mar", "mie", "jue", "vie", "sab"],
+  en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
 }
 
-export function formatDayTime(iso: string): string {
+export function monthLabel(d: Date, locale: Locale = "es"): string {
+  return `${MONTHS[locale][d.getMonth()]} ${d.getFullYear()}`
+}
+
+export function fullDayLabel(d: Date, locale: Locale = "es"): string {
+  const month = MONTHS[locale][d.getMonth()]
+  if (locale === "en") {
+    return `${month} ${d.getDate()}, ${d.getFullYear()}`
+  }
+  return `${d.getDate()} de ${month} ${d.getFullYear()}`
+}
+
+export function weekdayShort(index: number, locale: Locale = "es"): string {
+  return WEEKDAYS_SHORT[locale][index]
+}
+
+export function formatDayTime(iso: string, locale: Locale = "es"): string {
   const d = new Date(iso)
   const dd = String(d.getDate()).padStart(2, "0")
-  const mm = MONTHS_ES[d.getMonth()].slice(0, 3)
+  const mm = MONTHS[locale][d.getMonth()].slice(0, 3)
   const hh = String(d.getHours()).padStart(2, "0")
   const min = String(d.getMinutes()).padStart(2, "0")
   return `${dd} ${mm}, ${hh}:${min}`
 }
 
-export function formatRelative(iso: string): string {
+export function formatRelative(iso: string, locale: Locale = "es"): string {
   const diffMs = Date.now() - new Date(iso).getTime()
   const diffMin = Math.round(diffMs / 60000)
+  if (locale === "en") {
+    if (diffMin < 1) return "just now"
+    if (diffMin < 60) return `${diffMin} min ago`
+    const diffH = Math.round(diffMin / 60)
+    if (diffH < 24) return `${diffH} h ago`
+    const diffD = Math.round(diffH / 24)
+    if (diffD < 7) return `${diffD} d ago`
+    return formatDayTime(iso, locale)
+  }
   if (diffMin < 1) return "ahora mismo"
   if (diffMin < 60) return `hace ${diffMin} min`
   const diffH = Math.round(diffMin / 60)
   if (diffH < 24) return `hace ${diffH} h`
   const diffD = Math.round(diffH / 24)
   if (diffD < 7) return `hace ${diffD} d`
-  return formatDayTime(iso)
+  return formatDayTime(iso, locale)
 }
 
 export function buildMonthGrid(monthDate: Date): Date[] {

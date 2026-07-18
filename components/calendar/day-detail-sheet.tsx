@@ -14,8 +14,9 @@ import { PlatformBadge } from "@/components/calendar/platform-badge"
 import { ContentItemForm } from "@/components/content/content-item-form"
 import { MeetingForm } from "@/components/content/meeting-form"
 import { addContentItem, addMeeting } from "@/lib/store"
-import { formatDayTime, monthLabel } from "@/lib/date"
+import { formatDayTime, fullDayLabel } from "@/lib/date"
 import type { ContentItem, Meeting } from "@/lib/types"
+import { useTranslations } from "@/lib/i18n/use-translations"
 
 type AddMode = "none" | "content" | "meeting"
 
@@ -31,6 +32,7 @@ export function DayDetailSheet({
   onOpenChange: (open: boolean) => void
 }) {
   const [addMode, setAddMode] = useState<AddMode>("none")
+  const { t, locale } = useTranslations()
 
   const open = date !== null
 
@@ -39,9 +41,7 @@ export function DayDetailSheet({
     onOpenChange(next)
   }
 
-  const dayLabel = date
-    ? `${date.getDate()} de ${monthLabel(date)}`
-    : ""
+  const dayLabel = date ? fullDayLabel(date, locale) : ""
 
   const combined = [
     ...contentItems.map((c) => ({ kind: "content" as const, item: c })),
@@ -62,7 +62,7 @@ export function DayDetailSheet({
         <div className="flex flex-col gap-2 px-4 pb-2">
           {combined.length === 0 && addMode === "none" && (
             <p className="py-4 text-center text-sm text-muted-foreground">
-              Nada agendado este dia todavia.
+              {t("calendar.nothingScheduled")}
             </p>
           )}
 
@@ -78,7 +78,7 @@ export function DayDetailSheet({
                 <div className="flex-1 min-w-0">
                   <p className="truncate text-sm font-medium">{item.title}</p>
                   <p className="text-xs text-muted-foreground">
-                    {formatDayTime(item.scheduledAt)}
+                    {formatDayTime(item.scheduledAt, locale)}
                   </p>
                 </div>
               </Link>
@@ -93,7 +93,7 @@ export function DayDetailSheet({
                 <div className="flex-1 min-w-0">
                   <p className="truncate text-sm font-medium">{item.title}</p>
                   <p className="text-xs text-muted-foreground">
-                    {formatDayTime(item.scheduledAt)}
+                    {formatDayTime(item.scheduledAt, locale)}
                     {(item as Meeting).location
                       ? ` · ${(item as Meeting).location}`
                       : ""}
@@ -111,14 +111,14 @@ export function DayDetailSheet({
               className="flex-1"
               onClick={() => setAddMode("content")}
             >
-              <Plus /> Contenido
+              <Plus /> {t("calendar.addContent")}
             </Button>
             <Button
               variant="outline"
               className="flex-1"
               onClick={() => setAddMode("meeting")}
             >
-              <Plus /> Junta
+              <Plus /> {t("calendar.addMeeting")}
             </Button>
           </div>
         )}
@@ -127,7 +127,7 @@ export function DayDetailSheet({
           <div className="px-4 pb-6">
             <ContentItemForm
               defaultDate={date}
-              submitLabel="Agregar contenido"
+              submitLabel={t("calendar.addContentSubmit")}
               onSubmit={(input) => {
                 addContentItem(input)
                 setAddMode("none")

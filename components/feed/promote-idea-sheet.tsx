@@ -12,27 +12,27 @@ import { Button } from "@/components/ui/button"
 import { ContentItemForm } from "@/components/content/content-item-form"
 import { promoteIdea } from "@/lib/store"
 import type { Idea } from "@/lib/types"
+import { useTranslations } from "@/lib/i18n/use-translations"
 
 export function PromoteIdeaSheet({ idea }: { idea: Idea }) {
+  const { t } = useTranslations()
   const [open, setOpen] = useState(false)
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <Button size="sm" variant="outline" onClick={() => setOpen(true)}>
-        Promover a calendario
+        {t("feed.promote")}
       </Button>
       <SheetContent side="bottom" className="mx-auto max-w-lg rounded-t-3xl">
         <SheetHeader>
-          <SheetTitle>Promover idea</SheetTitle>
-          <SheetDescription>
-            Se crea un item de contenido en el calendario a partir de esta idea.
-          </SheetDescription>
+          <SheetTitle>{t("promote.title")}</SheetTitle>
+          <SheetDescription>{t("promote.subtitle")}</SheetDescription>
         </SheetHeader>
         <div className="px-4 pb-6">
           <ContentItemForm
             defaultDate={new Date()}
             initialTitle={idea.body.slice(0, 80)}
-            submitLabel="Crear en calendario"
+            submitLabel={t("promote.submit")}
             onSubmit={(input) => {
               promoteIdea(idea.id, input)
               setOpen(false)
