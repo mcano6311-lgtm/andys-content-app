@@ -7,11 +7,11 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "Calendario, ideas e inspiracion para el contenido de Andrea",
     start_url: "/",
     display: "standalone",
-    background_color: "#ffffff",
-    theme_color: "#ffffff",
+    background_color: "#fdf6ec",
+    theme_color: "#fdf6ec",
     icons: [
-      { src: "/icon-192", sizes: "192x192", type: "image/png" },
-      { src: "/icon-512", sizes: "512x512", type: "image/png" },
+      { src: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { src: "/icon-512.png", sizes: "512x512", type: "image/png" },
     ],
   }
 }
