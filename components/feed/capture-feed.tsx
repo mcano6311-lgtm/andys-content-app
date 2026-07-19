@@ -9,6 +9,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import { GlowCard } from "@/components/ui/glow-card"
 import { PlatformBadge } from "@/components/calendar/platform-badge"
 import { PromoteIdeaSheet } from "@/components/feed/promote-idea-sheet"
 import { useAppStore } from "@/lib/use-store"
@@ -128,21 +129,32 @@ function FeedRowCard({
 }) {
   const { t, locale } = useTranslations()
 
+  const header = (
+    <div className="mb-1.5 flex items-center justify-between">
+      <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+        <RowIcon kind={row.kind} />
+        {formatRelative(row.createdAt, locale)}
+      </span>
+      <button
+        onClick={() => removeRow(row)}
+        className="text-muted-foreground hover:text-destructive"
+        aria-label={t("feed.delete")}
+      >
+        <Trash2 className="size-3.5" />
+      </button>
+    </div>
+  )
+
+  const glowColor: Record<FeedRow["kind"], "orange" | "blue" | "purple" | "green"> = {
+    idea: "orange",
+    link: "blue",
+    voice: "purple",
+    note: "green",
+  }
+
   return (
-    <div className="rounded-xl border p-3">
-      <div className="mb-1.5 flex items-center justify-between">
-        <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-          <RowIcon kind={row.kind} />
-          {formatRelative(row.createdAt, locale)}
-        </span>
-        <button
-          onClick={() => removeRow(row)}
-          className="text-muted-foreground hover:text-destructive"
-          aria-label={t("feed.delete")}
-        >
-          <Trash2 className="size-3.5" />
-        </button>
-      </div>
+    <GlowCard glowColor={glowColor[row.kind]} customSize className="w-full rounded-xl p-3">
+      {header}
 
       {row.kind === "idea" && (
         <div className="flex flex-col gap-2">
@@ -216,7 +228,7 @@ function FeedRowCard({
           )}
         </div>
       )}
-    </div>
+    </GlowCard>
   )
 }
 
