@@ -1,0 +1,13 @@
+services:
+  andys:
+    build: .
+    container_name: andys
+    restart: unless-stopped
+    env_file:
+      - .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.andys.rule=Host(`andyscano.com`)"
+      - "traefik.http.routers.andys.entrypoints=websecure"
+      - "traefik.http.routers.andys.tls.certresolver=letsencrypt"
+      - "traefik.http.services.andys.loadbalancer.server.port=3000"

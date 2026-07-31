@@ -81,7 +81,9 @@ export function CaptureFeed() {
 
   return (
     <div className="flex flex-1 flex-col px-4 pt-6">
-      <h1 className="mb-4 text-lg font-semibold">{t("feed.heading")}</h1>
+      <div className="mb-4 flex items-center justify-between gap-2">
+        <h1 className="text-lg font-semibold">{t("feed.heading")}</h1>
+      </div>
 
       <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
         <TabsList className="mb-4 w-full">

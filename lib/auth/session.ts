@@ -1,5 +1,7 @@
 import "server-only"
 import { timingSafeEqual } from "node:crypto"
+import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
 import { SignJWT, jwtVerify } from "jose"
 
 const COOKIE_NAME = "andys_session"
@@ -39,6 +41,15 @@ export function checkPassword(candidate: string): boolean {
   const b = Buffer.from(expected)
   if (a.length !== b.length) return false
   return timingSafeEqual(a, b)
+}
+
+export async function requireAuth(): Promise<void> {
+  const cookieStore = await cookies()
+  const token = cookieStore.get(COOKIE_NAME)?.value
+  const valid = token ? await verifySessionToken(token) : false
+  if (!valid) {
+    redirect("/login")
+  }
 }
 
 export { COOKIE_NAME, SESSION_DURATION_SECONDS }

@@ -5,6 +5,11 @@ export function dayKey(iso: string): string {
   ).padStart(2, "0")}`
 }
 
+export function parseDayKey(key: string): Date {
+  const [year, month, day] = key.split("-").map(Number)
+  return new Date(year, month - 1, day)
+}
+
 export function dayKeyFromDate(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
     d.getDate()

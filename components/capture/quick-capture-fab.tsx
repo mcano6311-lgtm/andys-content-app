@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { usePathname } from "next/navigation"
 import { ChevronLeft, Lightbulb, Link2, Mic, Plus } from "lucide-react"
 import {
   Sheet,
@@ -20,8 +21,11 @@ type Mode = "menu" | "idea" | "link" | "voice"
 
 export function QuickCaptureFab() {
   const { t } = useTranslations()
+  const pathname = usePathname()
   const [open, setOpen] = useState(false)
   const [mode, setMode] = useState<Mode>("menu")
+
+  if (pathname === "/andys") return null
 
   const titles: Record<Mode, string> = {
     menu: t("capture.title"),

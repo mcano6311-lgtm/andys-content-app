@@ -4,6 +4,7 @@ import { useMemo, useState } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DayDetailSheet } from "@/components/calendar/day-detail-sheet"
+import { ReminderBanner } from "@/components/calendar/reminder-banner"
 import { useAppStore } from "@/lib/use-store"
 import {
   buildMonthGrid,
@@ -64,6 +65,8 @@ export function CalendarView() {
 
   return (
     <div className="flex flex-1 flex-col px-4 pt-6">
+      <ReminderBanner />
+
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-lg font-semibold capitalize">
           {monthLabel(monthDate, locale)}

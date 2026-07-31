@@ -20,6 +20,10 @@ export const dictionary = {
       addContent: "Contenido",
       addMeeting: "Junta",
       addContentSubmit: "Agregar contenido",
+      toggleDone: "Marcar como hecho",
+      openDetail: "Ver detalle",
+      quickIdeaPlaceholder: "Agregar idea...",
+      addIdea: "Agregar idea",
     },
     platform: {
       meeting: "Junta",
@@ -91,6 +95,11 @@ export const dictionary = {
       subtitle: "Se crea un item de contenido en el calendario a partir de esta idea.",
       submit: "Crear en calendario",
     },
+    reminders: {
+      today: "Hoy",
+      tomorrow: "Manana",
+      dismiss: "Descartar",
+    },
     status: {
       idea: "Idea",
       scheduled: "Agendado",
@@ -141,6 +150,10 @@ export const dictionary = {
       addContent: "Content",
       addMeeting: "Meeting",
       addContentSubmit: "Add content",
+      toggleDone: "Mark as done",
+      openDetail: "View detail",
+      quickIdeaPlaceholder: "Add idea...",
+      addIdea: "Add idea",
     },
     platform: {
       meeting: "Meeting",
@@ -211,6 +224,11 @@ export const dictionary = {
       title: "Promote idea",
       subtitle: "This creates a content item on the calendar from this idea.",
       submit: "Create on calendar",
+    },
+    reminders: {
+      today: "Today",
+      tomorrow: "Tomorrow",
+      dismiss: "Dismiss",
     },
     status: {
       idea: "Idea",

@@ -14,6 +14,7 @@ type Store = {
   inspirationLinks: InspirationLink[]
   voiceNotes: VoiceNote[]
   writtenNotes: WrittenNote[]
+  dismissedReminders: string[]
 }
 
 const STORAGE_KEY = "andys:data"
@@ -26,6 +27,7 @@ function emptyStore(): Store {
     inspirationLinks: [],
     voiceNotes: [],
     writtenNotes: [],
+    dismissedReminders: [],
   }
 }
 
@@ -212,6 +214,17 @@ export function deleteWrittenNote(id: string) {
   }))
 }
 
+// --- reminders ---
+
+export function dismissReminder(key: string) {
+  mutate((s) => ({
+    ...s,
+    dismissedReminders: s.dismissedReminders.includes(key)
+      ? s.dismissedReminders
+      : [...s.dismissedReminders, key],
+  }))
+}
+
 export function seedDemoData() {
   const s = load()
   if (
@@ -306,6 +319,7 @@ export function seedDemoData() {
     inspirationLinks: links,
     voiceNotes: [],
     writtenNotes: [],
+    dismissedReminders: [],
   })
 }
 
