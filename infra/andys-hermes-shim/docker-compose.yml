@@ -1,0 +1,17 @@
+services:
+  hermes-shim:
+    build: .
+    container_name: andys-hermes-shim
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - HERMES_CONTAINER=hermes-agent-zwvv-hermes-agent-1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/data
+    networks:
+      - andys_default
+networks:
+  andys_default:
+    external: true

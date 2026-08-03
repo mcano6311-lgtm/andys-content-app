@@ -1,0 +1,13 @@
+{
+  "name": "andys-hermes-shim",
+  "version": "1.0.0",
+  "private": true,
+  "description": "HTTP shim that lets andys-content-app talk to the Hermes Agent gateway via `docker exec` + `hermes chat`",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

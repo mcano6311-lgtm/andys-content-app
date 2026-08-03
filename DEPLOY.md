@@ -2,10 +2,13 @@
 
 ## Antes de empezar
 
-- El chat `/andys` y el botón "Sugerir ideas" (integración OpenClaw) se
-  quitaron de la app — dependían de un binario instalado solo en la Mac
-  mini, que se retira. Si algún día se quiere IA de nuevo, habría que
-  correrla en otra máquina o en el propio VPS.
+- El botón "Sugerir ideas" (integración OpenClaw) se quitó de la app —
+  dependía de un binario instalado solo en la Mac mini, que se retiró.
+- El chat `/andys` **volvió** (2026-08-03), ahora conectado al Hermes Agent
+  del VPS (app de Hostinger, no OpenClaw) a través de un shim propio — ver
+  `infra/andys-hermes-shim/README.md`. Requiere que ese contenedor
+  (`andys-hermes-shim`) esté corriendo y que `HERMES_SHIM_URL`/
+  `HERMES_SHIM_KEY` estén en `/opt/andys/.env`.
 - Los datos viven en `localStorage` del navegador (no hay Supabase
   conectado). En el VPS, cada dispositivo/navegador tendrá su propia copia,
   no compartida.
