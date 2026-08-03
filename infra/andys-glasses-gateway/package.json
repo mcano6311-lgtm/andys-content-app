@@ -1,0 +1,13 @@
+{
+  "name": "andys-glasses-gateway",
+  "version": "1.0.0",
+  "private": true,
+  "description": "OpenAI-compatible /v1/chat/completions gateway for the G2 glasses, backed by Hermes Agent",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

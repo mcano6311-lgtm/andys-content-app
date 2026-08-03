@@ -1,0 +1,13 @@
+services:
+  glasses-gateway:
+    build: .
+    container_name: andys-glasses-gateway
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - HERMES_CONTAINER=hermes-agent-zwvv-hermes-agent-1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "127.0.0.1:8647:8647"
