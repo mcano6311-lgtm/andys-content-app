@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { CalendarDays, Lightbulb } from "lucide-react"
+import { CalendarDays, Lightbulb, Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useTranslations } from "@/lib/i18n/use-translations"
 
@@ -13,6 +13,7 @@ export function BottomNav() {
   const items = [
     { href: "/", label: t("nav.calendar"), icon: CalendarDays },
     { href: "/ideas", label: t("nav.ideas"), icon: Lightbulb },
+    { href: "/andys", label: t("nav.chat"), icon: Sparkles },
   ]
 
   return (

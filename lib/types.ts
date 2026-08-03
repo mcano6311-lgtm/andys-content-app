@@ -60,3 +60,14 @@ export type WrittenNote = {
 }
 
 export type CaptureKind = "idea" | "link" | "voice" | "note"
+
+export type ChatRole = "user" | "assistant"
+
+export type ChatMessage = {
+  id: string
+  role: ChatRole
+  text: string
+  aborted?: boolean
+  savedNote?: string
+  createdAt: string
+}

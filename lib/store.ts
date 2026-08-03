@@ -1,4 +1,5 @@
 import type {
+  ChatMessage,
   ContentItem,
   Idea,
   InspirationLink,
@@ -15,6 +16,7 @@ type Store = {
   voiceNotes: VoiceNote[]
   writtenNotes: WrittenNote[]
   dismissedReminders: string[]
+  chatMessages: ChatMessage[]
 }
 
 const STORAGE_KEY = "andys:data"
@@ -28,6 +30,7 @@ function emptyStore(): Store {
     voiceNotes: [],
     writtenNotes: [],
     dismissedReminders: [],
+    chatMessages: [],
   }
 }
 
@@ -320,9 +323,24 @@ export function seedDemoData() {
     voiceNotes: [],
     writtenNotes: [],
     dismissedReminders: [],
+    chatMessages: [],
   })
 }
 
 export function clearAllData() {
   persist(emptyStore())
+}
+
+// --- chat ---
+
+export function addChatMessage(
+  input: Omit<ChatMessage, "id" | "createdAt">
+): ChatMessage {
+  const item: ChatMessage = { ...input, id: newId(), createdAt: now() }
+  mutate((s) => ({ ...s, chatMessages: [...s.chatMessages, item] }))
+  return item
+}
+
+export function clearChatMessages() {
+  mutate((s) => ({ ...s, chatMessages: [] }))
 }

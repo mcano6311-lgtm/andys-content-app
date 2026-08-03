@@ -5,6 +5,7 @@ export const dictionary = {
     nav: {
       calendar: "Calendario",
       ideas: "Ideas",
+      chat: "Andys",
       logout: "Salir",
     },
     login: {
@@ -130,11 +131,25 @@ export const dictionary = {
       addNotePlaceholder: "Agregar una nota...",
       linkThisTitle: "Vincular link",
     },
+    chat: {
+      heading: "Andys",
+      subtitle: "Tu asistente de contenido. Escribele en el idioma que quieras.",
+      placeholder: "Escribe un mensaje...",
+      send: "Enviar",
+      stop: "Detener",
+      thinking: "Andys esta pensando...",
+      stopped: "Detenido.",
+      error: "Algo fallo. Intenta de nuevo.",
+      empty: "Todavia no hay mensajes. Preguntale algo a Andys.",
+      savedPrefix: "Guardado en tu calendario para el",
+      originNote: "Guardado desde el chat con Andys.",
+    },
   },
   en: {
     nav: {
       calendar: "Calendar",
       ideas: "Ideas",
+      chat: "Andys",
       logout: "Log out",
     },
     login: {
@@ -259,6 +274,19 @@ export const dictionary = {
       writtenNotes: "Written notes",
       addNotePlaceholder: "Add a note...",
       linkThisTitle: "Link inspiration",
+    },
+    chat: {
+      heading: "Andys",
+      subtitle: "Your content assistant. Write to it in whatever language you like.",
+      placeholder: "Type a message...",
+      send: "Send",
+      stop: "Stop",
+      thinking: "Andys is thinking...",
+      stopped: "Stopped.",
+      error: "Something went wrong. Try again.",
+      empty: "No messages yet. Ask Andys something.",
+      savedPrefix: "Saved to your calendar for",
+      originNote: "Saved from the chat with Andys.",
     },
   },
 } as const
