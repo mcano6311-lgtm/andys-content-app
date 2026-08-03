@@ -13,8 +13,10 @@ conversation id, so every call flattens the full `messages` array the
 client sent into one prompt and treats it as a fresh one-shot turn.
 
 Only reachable over Tailscale (not the public internet):
-`https://hermes-vps-1.tail9814c9.ts.net:8642` — exposed via `tailscale
-serve`, not a Docker network or Traefik route.
+`https://hermes-vps-1.tail9814c9.ts.net` — exposed via `tailscale serve`,
+not a Docker network or Traefik route. **Must be plain 443, no port
+suffix** — see gotchas below, the glasses' own app can't handle a custom
+port in its base-URL field.
 
 ## Deploy on the VPS
 
@@ -27,16 +29,25 @@ cd /opt/andys-glasses-gateway && docker compose up -d --build
 # one-time per VPS: join Tailscale and expose the gateway over it
 tailscale up --hostname=hermes-vps
 tailscale cert <the-assigned-name>.tail9814c9.ts.net   # first cert issuance can 500 right after joining — retry once
-tailscale serve --bg --https=8642 http://127.0.0.1:8647
+tailscale serve --bg --https=443 http://127.0.0.1:8647
 ```
 
 Configure the glasses with:
-- Base URL: `https://<tailnet-hostname>.tail9814c9.ts.net:8642`
+- Base URL: `https://<tailnet-hostname>.tail9814c9.ts.net` (no port)
 - API key: the `GATEWAY_KEY` value
 - Model: `claude-sonnet-4.6` (or whatever `MODEL_ID` is set to)
 
 ## Gotchas
 
+- **Use `--https=443`, not a custom port.** First attempt used `--https=8642`
+  (matching the old pre-wipe setup) — server side worked fine (verified
+  with `curl` from multiple tailnet devices), but the G2 glasses' own
+  companion app failed with a generic "✗ Load failed" and never even hit
+  the gateway's logs. Root cause: that app's base-URL field doesn't support
+  a non-standard port. Moving to `--https=443` (bare hostname, no `:port`
+  in the URL) fixed it immediately. `tailscale serve`'s userspace netstack
+  only intercepts 443 on the *tailnet* IP, so it does not conflict with
+  Traefik's `:443` on the public interface (confirmed both work at once).
 - The app **inside** the container must bind `0.0.0.0`, not `127.0.0.1` —
   Docker's `127.0.0.1:8647:8647` port mapping on the host already
   restricts external reachability; a container-internal loopback bind is
